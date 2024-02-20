@@ -16,7 +16,7 @@ int merge(int a,int b){
 void build(int idx,int lx,int rx){
     propagate( idx, lx,  rx);
     if(lx==rx){
-        seg[idx]= nums[lx];
+        seg[idx]= nums[lx-1];
         return;
     }
     int mid=(lx+rx)>>1;

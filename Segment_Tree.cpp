@@ -1,96 +1,63 @@
-template < typename T = int , int Base = 0 > struct Segment_Tree {
-    struct Node {
-        T val;
-        Node(T V = 0) : val(V) {}
-        Node operator = (const T rhs) {
-            val = rhs;
-            return *this;
-        }
-    };
-    int size;
-    Node DEFAULT;
-    vector < Node > tree;
-#define LEFT (idx << 1)
-#define RIGHT ((idx << 1) | 1)
-#define VAL val
-    Segment_Tree(int n = 0){
-        size = 1, DEFAULT = 0;
-        while(size < n) size *= 2;
-        tree = vector < Node > (2 * size, DEFAULT);
+#define ll long long
+#define isON(n, k) (((n) >> (k)) & 1)
+#define sz(x) int(x.size())
+#include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp> // Common file
+#include <ext/pb_ds/tree_policy.hpp> // Including tree_order_statistics_node_update
+using namespace std;
+using namespace __gnu_pbds;
+template<class T> using ordered_set = tree<T, null_type , less<T> , rb_tree_tag , tree_order_statistics_node_update> ;
+template<class T> using  ordered_multiset= tree<pair<T, T>, null_type, less<pair<T, T>>, rb_tree_tag, tree_order_statistics_node_update>;
+const int N=1e5+7,OO=0x3f3f3f3f,M=1e3+5,MOD=1e9+7;
+int dx[]={1,0, -1,0,1,1,-1,-1};
+int dy[]={0,1, 0,-1,1,-1,1,-1};//
+template < typename T = int > using Pair = pair < T, T >;
+template < typename T = int > istream& operator >> (istream &in, vector < T > &v) {
+    for (auto &x: v) in >> x;
+    return in;
+}
+template < typename T = int > ostream& operator << (ostream &out, const vector < T > &v) {
+    for (const T &x: v) out << x<<' ' ;
+    return out;
+}
+vector<int>seg(4 * N);
+vector<int>nums;
+int merge(int a,int  b){
+    return a + b;
+}
+void build(int idx,int lx,int rx){
+    if(lx==rx){
+        seg[idx]= nums[lx - 1];
+        return;
     }
-
-    Segment_Tree(int n, const vector < T >& nums){
-        size = 1, DEFAULT = 0;
-        while(size < n) size *= 2;
-        tree = vector < Node > (2 * size, DEFAULT);
-        build(nums);
+    int mid=(lx+rx)>>1;
+    build(2*idx,lx,mid);
+    build(2*idx+1,mid+1,rx);
+    seg[idx]=merge(seg[2 * idx], seg[2 * idx + 1]);
+}
+int query(int idx,int lx,int rx,int l,int r){
+    if(lx>=l&&rx<=r){
+        return seg[idx];
     }
-
-    Node operation(const Node& a, const Node& b){
-        return a.val+b.val;
+    int mid=(lx+rx)>>1;
+    if(l<=mid&&r>mid) {
+        return merge(query(idx * 2, lx, mid, l, r), query(idx * 2+1, mid + 1, rx, l, r));
     }
-
-    void build(const vector < T >& nums, int idx, int lx, int rx){
-        if(Base ? lx >= sz(nums) : lx > sz(nums)) return;
-        if(rx == lx) tree[idx] = nums[lx - !Base];
-        else {
-            int mx = (rx + lx) / 2;
-            build(nums, LEFT, lx, mx);
-            build(nums, RIGHT, mx + 1, rx);
-            tree[idx] = operation(tree[LEFT], tree[RIGHT]);
-        }
+    else if(r<=mid){
+        return query(idx * 2, lx, mid, l, r);
     }
-
-    void build(const vector < T >& nums){
-        build(nums, 1, 1, size);
+    else {
+        return query(idx * 2+1, mid + 1, rx, l, r);
     }
-
-    void update(int index, T v, int idx, int lx, int rx){
-        if(rx == lx) tree[idx] = v;
-        else {
-            int mx = (rx + lx) / 2;
-            if(index <= mx) update(index, v, LEFT, lx, mx);
-            else update(index, v, RIGHT, mx + 1, rx);
-            tree[idx] = operation(tree[LEFT], tree[RIGHT]);
-        }
+}
+void update(int idx,int lx,int rx,int i,int v){
+    if(lx>i||rx<i)return;
+    if(lx==rx){
+        seg[idx]=v;
+        return;
     }
-
-    void update(const int index, const T v){
-        update(index, v, 1, 1, size);
-    }
-
-    Node query(int l, int r, int idx, int lx, int rx){
-        if(lx > r || l > rx) return DEFAULT;
-        if(lx >= l && rx <= r) return tree[idx];
-        int mx = (lx + rx) / 2;
-        return operation(query(l, r, LEFT, lx, mx), query(l, r, RIGHT, mx + 1, rx));
-    }
-
-    Node query_Node(const int l, const int r){
-        return query(l, r, 1, 1, size);
-    }
-
-    T query(const int l, const int r){
-        return query_Node(l, r).VAL;
-    }
-
-    friend ostream& operator << (ostream &out, const Node &node) {
-        out << node.VAL << ' ';
-        return out;
-    }
-    void print(int idx, int lx, int rx){
-        if(lx == rx) cout << tree[idx] << ' ';
-        else {
-            int mx = (lx + rx) / 2;
-            print(LEFT, lx, mx);
-            print(RIGHT, mx + 1, rx);
-        }
-    }
-    void print(){
-        print(1, 1, size);
-        cout << '\n';
-    }
-#undef LEFT
-#undef RIGHT
-#undef VAL
-};
+    int mid=(lx+rx)>>1;
+    update(2*idx,lx,mid,i,v);
+    update(2*idx+1,mid+1,rx,i,v);
+    seg[idx]= merge(seg[2 * idx], seg[2 * idx + 1]);
+}

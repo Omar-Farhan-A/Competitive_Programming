@@ -1,7 +1,6 @@
-const int N=1e5+7,OO=0x3f3f3f3f,M=1e3+5,MOD=1e9+7;
-vector<int>seg(4 * N);
-vector<int>lazy(4*N,0);
-vector<int>nums(4*N,0);
+vector<int>seg(4*N);
+vector<int>lazy(4*N);
+vector<int>nums;
 void propagate(int idx, int lx, int rx) {
     if (!lazy[idx])return;
     seg[idx] |= lazy[idx];

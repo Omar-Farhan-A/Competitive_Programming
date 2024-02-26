@@ -1,3 +1,4 @@
+//used when we don't know the roots
 vector<int>adj[N];
 string getNodeCanoincalForm(int u, vector<vector<string>>&subcan){
     string curNode="(";
@@ -34,4 +35,13 @@ string treeCanoincalForm(){
             --remNodes;
         }
     }
+    int v1=leafNodes.front();
+    leafNodes.pop();
+    int v2=leafNodes.empty()?-1:leafNodes.front();
+    string s1= getNodeCanoincalForm(v1,subCan);
+    string s2= ~v2? getNodeCanoincalForm(v2,subCan):"";
+    if(v2==-1)return s1;
+    subCan[v1].push_back(s2);
+    subCan[v2].push_back(s1);
+    return min(getNodeCanoincalForm(v1,subCan), getNodeCanoincalForm(v2,subCan));
 }

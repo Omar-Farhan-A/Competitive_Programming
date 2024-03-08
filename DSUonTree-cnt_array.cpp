@@ -2,16 +2,16 @@ int cnt[maxn];
 bool big[maxn];
 void add(int v, int p, int x){
     cnt[ col[v] ] += x;
-    for(auto u: g[v])
+    for(auto u: adj[v])
         if(u != p && !big[u])
             add(u, v, x)
 }
 void dfs(int v, int p, bool keep){
     int mx = -1, bigChild = -1;
-    for(auto u : g[v])
+    for(auto u : adj[v])
        if(u != p && sz[u] > mx)
           mx = sz[u], bigChild = u;
-    for(auto u : g[v])
+    for(auto u : adj[v])
         if(u != p && u != bigChild)
             dfs(u, v, 0);  // run a dfs on small childs and clear them from cnt
     if(bigChild != -1)

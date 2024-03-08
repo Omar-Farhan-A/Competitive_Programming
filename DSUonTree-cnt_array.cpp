@@ -1,25 +1,25 @@
-int cnt[maxn];
-bool big[maxn];
-void add(int v, int p, int x){
-    cnt[ col[v] ] += x;
-    for(auto u: adj[v])
-        if(u != p && !big[u])
-            add(u, v, x)
+int cnt[N];
+bool big[N];
+void add(int u, int p, int x){
+    cnt[ col[u] ] += x;
+    for(auto i: adj[u])
+        if(i != p && !big[i])
+            add(i, u, x);
 }
-void dfs(int v, int p, bool keep){
+void dfs(int u, int p, bool keep){
     int mx = -1, bigChild = -1;
-    for(auto u : adj[v])
-       if(u != p && sz[u] > mx)
-          mx = sz[u], bigChild = u;
-    for(auto u : adj[v])
-        if(u != p && u != bigChild)
-            dfs(u, v, 0);  // run a dfs on small childs and clear them from cnt
+    for(auto i : adj[u])
+        if(i != p && siz[i] > mx)
+            mx = siz[i], bigChild = i;
+    for(auto i : adj[u])
+        if(i != p && i != bigChild)
+            dfs(i, u, 0);
     if(bigChild != -1)
-        dfs(bigChild, v, 1), big[bigChild] = 1;  // bigChild marked as big and not cleared from cnt
-    add(v, p, 1);
-    //now cnt[c] is the number of vertices in subtree of vertex v that has color c. You can answer the queries easily.
+        dfs(bigChild, u, 1), big[bigChild] = 1;
+    add(u, p, 1);
+    ans[u-1]= query(1,1,n,1,n).sum;
     if(bigChild != -1)
         big[bigChild] = 0;
     if(keep == 0)
-        add(v, p, -1);
+        add(u, p, -1);
 }

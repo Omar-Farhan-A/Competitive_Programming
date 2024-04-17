@@ -39,18 +39,18 @@ struct Segment_Tree {
     ll query(int l,int r){
         return query(1,1,siz,l,r);
     }
-    void update(int idx, int lx, int rx, int l, int r, ll v) {
-        if (lx > r || rx < l)return;
-        if (lx >= l && rx <= r) {
-            seg[idx] = v;
-            return;
-        }
-        int mid = (lx + rx) >> 1;
-        update(2 * idx, lx, mid, l, r, v);
-        update(2 * idx + 1, mid + 1, rx, l, r, v);
-        seg[idx] = merge(seg[2 * idx], seg[2 * idx + 1]);
+   void update(int idx,int lx,int rx,int i,int v){
+    if(lx>i||rx<i)return;
+    if(lx==rx){
+        seg[idx]=v;
+        return;
     }
-    void update(int l,int r,int v){
-        update(1,1,siz,l,r,v);
+    int mid=(lx+rx)>>1;
+    update(2*idx,lx,mid,i,v);
+    update(2*idx+1,mid+1,rx,i,v);
+    seg[idx]= merge(seg[2 * idx], seg[2 * idx + 1]);
+}
+    void update(int i,int v){
+        update(1,1,siz,i,v);
     }
 };

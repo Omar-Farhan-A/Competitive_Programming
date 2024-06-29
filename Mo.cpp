@@ -1,4 +1,4 @@
-// 0-based Mo-algorithm
+// 1-based Mo-algorithm
 const int SQ=450,Q=2e5+7;
 struct query{
     int l,r,q_idx,block_idx;

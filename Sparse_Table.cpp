@@ -1,5 +1,5 @@
 struct SparseTable{
-0-based
+//0-based
         int LOG,n;
         vector<vector<int>>S;
         vector<int>bin_log;

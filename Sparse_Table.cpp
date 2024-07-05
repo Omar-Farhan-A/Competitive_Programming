@@ -5,8 +5,7 @@ struct SparseTable{
         vector<int>bin_log;
         vector<int>a;
         SparseTable(int n,vector<int>&a){
-            LOG=1;
-            while (LOG<=n)LOG*=2;
+            LOG=20;
             S=vector<vector<int>>(n,vector<int>(LOG));
             bin_log.resize(n+5);
             this->a=a;

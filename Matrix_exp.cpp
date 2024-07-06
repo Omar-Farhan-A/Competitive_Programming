@@ -21,7 +21,7 @@ vvl fastExp(vvl &x,ll n){
             product = mulMat( product , x);
         }
         x = mulMat(x , x);
-        n /= 2;
+        n >>=1;
     }
     return product;
 }

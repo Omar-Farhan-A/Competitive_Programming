@@ -1,5 +1,4 @@
 vector<ll>pw1(N),pw2(N);
-vector<Pair<ll>>pre(N);
 ll mod1=1e9+7,mod2=2e9+11,base1=31,base2=37,inv1,inv2;
 ll fpow(ll x,ll y,ll mod){
     ll prod = x,ans = 1;
@@ -24,9 +23,11 @@ void init(){
 struct Hashing{
     int len;
     ll h1,h2,v;
+    vector<Pair<ll>>pre;
     deque<char>d;
     Hashing(){
         h1=h2=len=0;
+        pre.push_back({0,0});
     }
     void push_back(char c){
         v=c-'a'+1;
@@ -34,6 +35,7 @@ struct Hashing{
         h2=(h2*base2+v)%mod2;
         d.push_back(c);
         len++;
+        pre.push_back({h1,h2});
     }
     void push_front(char c){
         v=c-'a'+1;

@@ -1,7 +1,10 @@
-ll mfp(ll n, ll p, ll m){
-    if(p == 0) return 1;
-    ll sq = mfp(n, p / 2, m);
-    sq = (sq * sq) % m;
-    if(p & 1) sq = (sq * n) % m;
-    return sq % m;
+ll fast_exp(ll x,ll y){
+    ll prod = x,ans = 1;
+    while(y){
+        if(y&1)ans*=prod,ans%=MOD;
+        prod*=prod;
+        prod%=MOD;
+        y>>=1;
+    }
+    return ans;
 }

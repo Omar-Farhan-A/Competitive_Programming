@@ -45,7 +45,7 @@ public:
     Segment_Tree(int n,vector<int>&v...){
         siz=1;
         while (siz<=n)siz<<=1;
-        seg.resize(siz*2);
+        seg.resize(siz<<1);
         this->a=v;
         build(1,1,siz,1,n);
     }

@@ -15,7 +15,7 @@ private:
         apply(idx);
     }
     T merge(T x, T y){
-        return x > y?y:x;
+        return x + y;
     }
     void apply(int idx...){
         seg[idx]= merge(seg[idx<<1],seg[idx<<1|1]);
@@ -33,12 +33,12 @@ private:
         apply(idx);
     }
     T query(int idx,int lx,int rx,int l,int r){
-        if(lx>r||rx<l)return OO;
+        if(lx>r||rx<l)return 0;
         if(lx>=l&&rx<=r){
             return seg[idx];
         }
         int mid=(lx+rx)>>1;
-        return merge(query(2*idx,lx,mid,l,r), query(2*idx+1,mid+1,rx,l,r));
+        return merge(query(idx<<1,lx,mid,l,r), query(idx<<1|1,mid+1,rx,l,r));
     }
 public:
     int siz;
@@ -55,5 +55,4 @@ public:
     void update(int idx,T val){
         update(1,1,siz,idx,val);
     }
-
 };

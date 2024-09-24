@@ -1,41 +1,61 @@
-// 0-based Mo-algorithm
-const int SQ=450,Q=2e5+7;
-struct query{
-    int l,r,q_idx,block_idx;
-    query(){}
-    query(int L, int R, int Q_idx)
-    {
-        l= L , r= R , q_idx=Q_idx, block_idx= L / SQ;
+template<class T=int>
+class MO {
+private:
+    int q, SQ;
+    T ans;
+    struct Query {
+        int l, r, q_idx;
+    };
+    vector<Query> Q;
+    vector<T> v;
+
+    void add(int i) {
+       ans+=v[i];
     }
-    bool operator<(const query&y)const{
-        if(block_idx!=y.block_idx)
-        {
-            return block_idx<y.block_idx;
+
+    void remove(int i) {
+       ans-=v[i];
+    }
+
+    T calc(...) {
+        return ans;
+    }
+
+public:
+    MO(vector<T> &v) {
+        q = 0;
+        ans = 0;
+        this->v = v;
+        SQ = sqrt(v.size());
+    }
+
+    void add_query(int l, int r) {
+        Q.push_back({l, r, q++});
+    }
+
+    void process() {
+        vector<T> ans_query(q);
+        std::sort(Q.begin(), Q.end(), [&](Query &a, Query &b) {
+            if (a.l / SQ != b.l / SQ) {
+                return a.l / SQ < b.l / SQ;
+            }
+            return a.r < b.r;
+        });
+        int l = 1, r = 0;
+        for (auto [L, R, idx]: Q) {
+            while (r < R)
+                add(++r);
+            while (l > L)
+                add(--l);
+            while (r > R)
+                remove(r--);
+            while (l < L)
+                remove(l++);
+            ans_query[idx] = calc();
         }
-        return r<y.r;
+        for (auto it: ans_query) {
+            cout << it<<'\n';
+        }
+        for (int i = Q.back().l; i <= Q.back().r; i++) remove(i);
     }
 };
-int q_ans[Q],q;
-ll ans;
-query queries[Q];
-void add(int idx)
-{
-    // what you need to add
-}
-void remove(int idx)
-{
-    // what you need to remove
-}
-void MO_process()
-{
-    sort(queries,queries+q);
-    int l=1,r=0;
-    for(int i=0;i<q;i++)
-    {
-        while(r<queries[i].r)add(++r);
-        while(r>queries[i].r)remove(r--);
-        while(l<queries[i].l)remove(l++);
-        while(l>queries[i].l)add(--l);
-        q_ans[queries[i].q_idx]=ans;
-    }
-}

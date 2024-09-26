@@ -1,8 +1,8 @@
 template<typename T = int>
 class Basis {
-    int sz, bits;
     vector<T> basis;
-
+public:
+    int sz, bits;
     Basis(int b = 32) {
         sz = 0;
         bits = b;

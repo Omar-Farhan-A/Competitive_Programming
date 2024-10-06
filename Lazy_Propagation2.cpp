@@ -40,8 +40,8 @@ private:
         seg[idx].val= merge(seg[idx<<1].val,seg[idx<<1|1].val);
     }
     void update(int idx,int lx,int rx,int l,int r,T val...){
-        if(lx>r||rx<l)return ;
         propagate(idx,lx,rx);
+         if(lx>r||rx<l)return ;
         if(lx>=l&&rx<=r){
             seg[idx].lazy+=val;
             seg[idx].isLazy=1;
@@ -54,8 +54,8 @@ private:
         apply(idx);
     }
     T query(int idx,int lx,int rx,int l,int r){
+         propagate(idx,lx,rx);
         if(lx>r||rx<l)return 0;
-        propagate(idx,lx,rx);
         if(lx>=l&&rx<=r){
             return seg[idx].val;
         }

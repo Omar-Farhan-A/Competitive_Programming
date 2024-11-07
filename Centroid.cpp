@@ -97,7 +97,7 @@ public:
 
     Centroid(int n, vector<vector<int>> &adj) {
         vis = siz = par = dep = rank = vector<int>(n + 5);
-        best = vector<int>(2 * n);
+        best = vector<int>(n + 5 ,2 * n);
         this->adj = adj;
         up = vector<vector<int>>(n + 5, vector<int>(20));
         dfs();

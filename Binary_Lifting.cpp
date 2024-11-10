@@ -14,6 +14,9 @@ private:
         }
 public:
         vector<int>dep;
+        bool isAncestor(int u, int v) {
+            return in[u] <= in[v] && out[u] >= out[v];
+        }
         int LCA(int u,int v){
             if(dep[u]<dep[v])swap(u,v);
             int k=dep[u]-dep[v];

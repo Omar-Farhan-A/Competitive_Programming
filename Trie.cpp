@@ -15,7 +15,7 @@ public:
         trie = vector<Node>(1);
     }
 
-    void insert(string &s, int add = 1) {
+    void update(string &s, int op = 1) {
         int v = 0;
         for (auto &ch: s) {
             int c = ch - 'a';
@@ -24,9 +24,9 @@ public:
                 trie.emplace_back();
             }
             v = trie[v].next[c];
-            trie[v].prefix += add;
+            trie[v].prefix += op;
         }
-        trie[v].end += add;
+        trie[v].end += op;
     }
 
     int cnt_word(string &s) {

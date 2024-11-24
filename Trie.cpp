@@ -1,10 +1,10 @@
 class Trie {
     struct Node {
-        int next[26], prefix, end, par, c;
+        int next[26], prefix, end;
 
         Node() {
             memset(next, -1, sizeof next);
-            prefix = end = par = 0;
+            prefix = end = 0;
         }
     };
 
@@ -15,20 +15,18 @@ public:
         trie = vector<Node>(1);
     }
 
-    void insert(string &s) {
+    void insert(string &s, int add = 1) {
         int v = 0;
         for (auto &ch: s) {
             int c = ch - 'a';
             if (trie[v].next[c] == -1) {
                 trie[v].next[c] = int(trie.size());
                 trie.emplace_back();
-                trie[trie[v].next[c]].par = v;
-                trie[trie[v].next[c]].c = c;
             }
             v = trie[v].next[c];
-            trie[v].prefix++;
+            trie[v].prefix += add;
         }
-        trie[v].end++;
+        trie[v].end += add;
     }
 
     int cnt_word(string &s) {
@@ -53,21 +51,5 @@ public:
             v = trie[v].next[c];
         }
         return trie[v].prefix;
-    }
-
-    void remove(string &s) {
-        int v = 0;
-        for (auto &ch: s) {
-            int c = ch - 'a';
-            if (trie[v].next[c] == -1)return;
-            v = trie[v].next[c];
-        }
-        trie[v].end--;
-        while (v != 0) {
-            if (!--trie[v].prefix) {
-                trie[trie[v].par].next[trie[v].c] = -1;
-            }
-            v = trie[v].par;
-        }
     }
 };

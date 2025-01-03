@@ -1,4 +1,5 @@
 class Manacher {
+    // 0-based
 private:
     vector<int> p;
 public:
@@ -40,6 +41,16 @@ public:
 
     int get(int i) {
         return get_even(i) + get_odd(i);
+    }
+
+    bool isPalindrome(int l, int r) {
+        int m = (l + r) / 2;
+        int k = r - l + 1;
+        if (k & 1) {
+            return get_odd(m) >= k / 2 + 1;
+        }
+        return get_even(m) >= k / 2;
+
     }
 
 };

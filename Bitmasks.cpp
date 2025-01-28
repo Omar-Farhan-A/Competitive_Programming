@@ -1,6 +1,12 @@
 #define ON(n, k) ((n) | (1 << (k)))
 #define OFF(n, k) ((n) & ~(1 << (k)))
 #define isON(n, k) (((n) >> (k)) & 1)
+int mask = 5;
+    for (int x = mask; x > 0; x = (x - 1) & mask) {
+       /*
+         find all sub masks x from a given mask      
+         */
+    }
 void bitmasks(){
     int n=5;
     __builtin_popcount(n);

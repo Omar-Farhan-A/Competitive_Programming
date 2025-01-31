@@ -40,12 +40,12 @@ public:
         n = sz(s);
         prefix = suffix = vector<array<ll, 2>>(n + 5);
         for (int i = 1; i <= n; i++) {
-            (prefix[i][0] = prefix[i - 1][0] * base1 + (s[i] - 'a')) %= mod1;
-            (prefix[i][1] = prefix[i - 1][1] * base2 + (s[i] - 'a')) %= mod2;
+            (prefix[i][0] = prefix[i - 1][0] * base1 + (s[i] - 'a' + 1)) %= mod1;
+            (prefix[i][1] = prefix[i - 1][1] * base2 + (s[i] - 'a' + 1)) %= mod2;
         }
         for (int i = n; i >= 1; i--) {
-            (suffix[i][0] = suffix[i + 1][0] * base1 + (s[i] - 'a')) %= mod1;
-            (suffix[i][1] = suffix[i + 1][1] * base2 + (s[i] - 'a')) %= mod2;
+            (suffix[i][0] = suffix[i + 1][0] * base1 + (s[i] - 'a' + 1)) %= mod1;
+            (suffix[i][1] = suffix[i + 1][1] * base2 + (s[i] - 'a' + 1)) %= mod2;
         }
     }
 

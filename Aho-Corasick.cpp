@@ -9,7 +9,6 @@ class AhoCorasick {
 
         Node() {
             memset(next, -1, sizeof next);
-            memset(next, -1, sizeof next);
             cnt = 0;
             link = -1;
         }

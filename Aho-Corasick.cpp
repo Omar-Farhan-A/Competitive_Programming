@@ -5,7 +5,7 @@ class AhoCorasick {
 
 
     struct Node {
-        int next[26], end, link, cnt;
+        int next[26], link, cnt;
 
         Node() {
             memset(next, -1, sizeof next);
@@ -27,7 +27,7 @@ class AhoCorasick {
             }
             v = trie[v].next[c];
         }
-        trie[v].end += 1;
+        trie[v].cnt += 1;
         leaf[v].push_back(siz++);
     }
 
@@ -72,7 +72,8 @@ public:
         }
         build();
     }
-    // search for string in the trie and calculate occurrence for each suffix 
+
+    // search for string in the trie and calculate occurrence for each suffix
     void search(string &s) {
         int v = 0;
         for (auto &i: s) {
@@ -84,18 +85,19 @@ public:
             seen[v]++;
         }
     }
-    // count the number of strings form trie in s 
+
+    // count the number of strings form trie in s
     int count(string &s) {
-        int ans = 0, v = 0;
+        int ret = 0, v = 0;
         for (auto &i: s) {
             int c = i - 'a';
             while (~v && trie[v].next[c] == -1) {
                 v = trie[v].link;
             }
             v = (~v ? trie[v].next[c] : 0);
-            ans += trie[v].cnt;
+            ret += trie[v].cnt;
         }
-        return ans;
+        return ret;
     }
 
     // DFS to calculate occurrence of each string in the trie in s
@@ -109,7 +111,8 @@ public:
         }
         return cur;
     }
-    // get indexes of occurrence for each string in the trie in s 
+
+    // get indexes of occurrence for each string in the trie in s
     vector<vector<int>> get_occ(string &s) {
         int v = 0, j = 0;
         vector<vector<int>> ret(siz);

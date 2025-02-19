@@ -1,4 +1,4 @@
-void count_sort(vector<int> &p, vector<int> &c) {
+void sort(vector<int> &p, vector<int> &c) {
     int n = p.size();
     vector<int> pos(n), cnt(n), p_new(n);
     for (auto &x: c) {
@@ -13,13 +13,11 @@ void count_sort(vector<int> &p, vector<int> &c) {
     }
     p.swap(p_new);
 }
-
-vector<int> p, c, lcp;
-
-void process(string s) {
+ 
+auto suffix_array(string s) {
     s += "$";
     int n = s.size();
-    p = c = lcp = vector<int>(n);
+    vector<int> p(n), c(n);
     {
         vector<pair<int, int>> a(n);
         for (int i = 0; i < n; i++) {
@@ -42,7 +40,7 @@ void process(string s) {
             p[i] = p[i] - (1 << k);
             if (p[i] < 0)p[i] += n;
         }
-        count_sort(p, c);
+        sort(p, c);
         vector<int> c_new(n);
         c_new[p[0]] = 0;
         for (int i = 1; i < n; i++) {
@@ -57,7 +55,15 @@ void process(string s) {
         c.swap(c_new);
         k++;
     }
+    return pair{p, c};
+}
+ 
+vector<int> LCP(string s) {
+    auto [p, c] = suffix_array(s);
+    int k = 0;
     k = 0;
+    int n = s.size() + 1;
+    vector<int> lcp(n);
     for (int i = 0; i < n - 1; i++) {
         int pi = c[i];
         int j = p[pi - 1];
@@ -65,4 +71,5 @@ void process(string s) {
         lcp[pi] = k;
         k = max(0, k - 1);
     }
+    return lcp;
 }

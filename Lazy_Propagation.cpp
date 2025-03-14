@@ -8,6 +8,10 @@ class Segment_Tree {
             lazy = 0;
         }
 
+        void apply(int lx, int rx, T v) {
+            val += v * (rx - lx + 1);
+        }
+
         void merge(Node a, Node b) {
             val = a.val + b.val;
         }
@@ -16,50 +20,51 @@ class Segment_Tree {
     vector<Node> sg;
     int size;
 
-    void propagate(int idx, int lx, int rx) {
-        if (!sg[idx].lazy)return;
-        sg[idx].val += sg[idx].lazy * (rx - lx + 1);
-        int left = idx << 1, right = idx << 1 | 1;
+    void propagate(int x, int lx, int rx) {
+        if (!sg[x].lazy)return;
+        int m = (lx + rx) >> 1;
         if (lx != rx) {
-            sg[left].lazy += sg[idx].lazy;
-            sg[right].lazy += sg[idx].lazy;
+            sg[2 * x + 1].lazy += sg[x].lazy;
+            sg[2 * x + 2].lazy += sg[x].lazy;
+            sg[2 * x + 1].apply(lx, m, sg[x].lazy);
+            sg[2 * x + 2].apply(m + 1, rx, sg[x].lazy);
         }
-        sg[idx].lazy = 0;
+        sg[x].lazy = 0;
     }
 
-    void build(int idx, int lx, int rx, vector<int> &a) {
+    void build(int x, int lx, int rx, vector<int> &a) {
         if (lx == rx) {
-            sg[idx] = (lx < a.size() ? a[lx] : 0);
+            sg[x].apply(lx, rx, lx < a.size() ? a[lx] : 0);
             return;
         }
-        int m = (lx + rx) >> 1, left = idx << 1, right = idx << 1 | 1;
-        build(left, lx, m, a);
-        build(right, m + 1, rx, a);
-        sg[idx].merge(sg[left], sg[right]);
+        int m = (lx + rx) >> 1;
+        build(2 * x + 1, lx, m, a);
+        build(2 * x + 2, m + 1, rx, a);
+        sg[x].merge(sg[2 * x + 1], sg[2 * x + 2]);
     }
 
-    void update(int idx, int lx, int rx, int l, int r, T val) {
-        propagate(idx, lx, rx);
+    void update(int x, int lx, int rx, int l, int r, T val) {
         if (lx > r || rx < l)return;
         if (l <= lx && rx <= r) {
-            sg[idx].lazy += val;
-            propagate(idx, lx, rx);
+            sg[x].apply(lx, rx, val);
+            sg[x].lazy += val;
             return;
         }
-        int m = (lx + rx) >> 1, left = idx << 1, right = idx << 1 | 1;
-        update(left, lx, m, l, r, val);
-        update(right, m + 1, rx, l, r, val);
-        sg[idx].merge(sg[left], sg[right]);
+        int m = (lx + rx) >> 1;
+        propagate(x, lx, rx);
+        update(2 * x + 1, lx, m, l, r, val);
+        update(2 * x + 2, m + 1, rx, l, r, val);
+        sg[x].merge(sg[2 * x + 1], sg[2 * x + 2]);
     }
 
-    T query(int idx, int lx, int rx, int l, int r) {
+    T query(int x, int lx, int rx, int l, int r) {
         if (lx > r || rx < l)return 0;
-        propagate(idx, lx, rx);
+        propagate(x, lx, rx);
         if (l <= lx && rx <= r) {
-            return sg[idx].val;
+            return sg[x].val;
         }
-        int m = (lx + rx) >> 1, left = idx << 1, right = idx << 1 | 1;
-        return query(left, lx, m, l, r) + query(right, m + 1, rx, l, r);
+        int m = (lx + rx) >> 1;
+        return query(2 * x + 1, lx, m, l, r) + query(2 * x + 2, m + 1, rx, l, r);
     }
 
 public:
@@ -67,14 +72,14 @@ public:
         size = 1;
         while (size < a.size())size <<= 1;
         sg.resize(size << 1);
-        build(1, 0, size - 1, a);
+        build(0, 0, size - 1, a);
     }
 
     T query(int l, int r) {
-        return query(1, 0, size - 1, l, r);
+        return query(0, 0, size - 1, l, r);
     }
 
     void update(int l, int r, T val) {
-        update(1, 0, size - 1, l, r, val);
+        update(0, 0, size - 1, l, r, val);
     }
 };

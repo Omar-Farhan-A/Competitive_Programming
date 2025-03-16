@@ -1,56 +1,69 @@
-struct Segment_Tree {
-    vector<ll> seg;
-    vector<int> nums;
-    int siz=1;
-    Segment_Tree(int n,vector<int>&nums){
-        while (siz<=n)siz*=2;
-        seg=vector<ll>(2*siz);
-        this->nums=nums;
-        build(1,1,siz,1,n);
-    }
-    ll merge(ll a, ll b) {
-        return a + b;
-    }
-    void build(int idx, int lx, int rx,int l,int r) {
-        if (lx > r || rx < l)return;
+template<typename T = int>
+class Segment_Tree {
+    struct Node {
+        T sum;
+
+        Node(T v = 0) {
+            sum = v;
+        }
+
+        void merge(Node a, Node b) {
+            sum = a.sum + b.sum;
+        }
+
+    };
+
+    vector<Node> sg;
+
+    void build(int x, int lx, int rx, vector<int> &a) {
         if (lx == rx) {
-            seg[idx] = nums[lx - 1];
+            sg[x] = (lx < a.size() ? a[lx] : 0);
             return;
         }
-        int mid = (lx + rx) >> 1;
-        build(2 * idx, lx, mid,l,r);
-        build(2 * idx + 1, mid + 1, rx,l,r);
-        seg[idx] = merge(seg[2 * idx], seg[2 * idx + 1]);
+        int m = (lx + rx) >> 1;
+        build(2 * x + 1, lx, m, a);
+        build(2 * x + 2, m + 1, rx, a);
+        sg[x].merge(sg[2 * x + 1], sg[2 * x + 2]);
     }
 
-    ll query(int idx, int lx, int rx, int l, int r) {
-        if (lx >= l && rx <= r) {
-            return seg[idx];
+    void update(int x, int lx, int rx, int i, T val) {
+        if (lx == rx) {
+            sg[x] = val;
+            return;
         }
-        int mid = (lx + rx) >> 1;
-        if (l <= mid && r > mid) {
-            return merge(query(idx * 2, lx, mid, l, r), query(idx * 2 + 1, mid + 1, rx, l, r));
-        } else if (r <= mid) {
-            return query(idx * 2, lx, mid, l, r);
-        } else {
-            return query(idx * 2 + 1, mid + 1, rx, l, r);
+        int m = (lx + rx) >> 1;
+        if (i <= m)
+            update(2 * x + 1, lx, m, i, val);
+        else
+            update(2 * x + 2, m + 1, rx, i, val);
+        sg[x].merge(sg[2 * x + 1], sg[2 * x + 2]);
+    }
+
+    T query(int x, int lx, int rx, int l, int r) {
+        if (lx > r || rx < l)return 0;
+        if (l <= lx && rx <= r) {
+            return sg[x].sum;
         }
+        int m = (lx + rx) >> 1;
+        return query(2 * x + 1, lx, m, l, r) + query(2 * x + 2, m + 1, rx, l, r);
     }
-    ll query(int l,int r){
-        return query(1,1,siz,l,r);
+
+public:
+    int size;
+
+    Segment_Tree(vector<int> &a) {
+        size = 1;
+        while (size < a.size())size <<= 1;
+        sg.resize(size << 1);
+        build(0, 0, size - 1, a);
     }
-   void update(int idx,int lx,int rx,int i,int v){
-    if(lx>i||rx<i)return;
-    if(lx==rx){
-        seg[idx]=v;
-        return;
+
+    void update(int i, T val) {
+        update(0, 0, size - 1, i, val);
     }
-    int mid=(lx+rx)>>1;
-    update(2*idx,lx,mid,i,v);
-    update(2*idx+1,mid+1,rx,i,v);
-    seg[idx]= merge(seg[2 * idx], seg[2 * idx + 1]);
-}
-    void update(int i,int v){
-        update(1,1,siz,i,v);
+
+    T query(int l, int r) {
+        return query(0, 0, size - 1, l, r);
     }
+
 };

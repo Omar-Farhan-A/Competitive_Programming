@@ -10,6 +10,7 @@ class Segment_Tree {
 
         void apply(int lx, int rx, T v) {
             val += v * (rx - lx + 1);
+            lazy += v;
         }
 
         void merge(Node a, Node b) {
@@ -24,8 +25,6 @@ class Segment_Tree {
         if (!sg[x].lazy)return;
         int m = (lx + rx) >> 1;
         if (lx != rx) {
-            sg[2 * x + 1].lazy += sg[x].lazy;
-            sg[2 * x + 2].lazy += sg[x].lazy;
             sg[2 * x + 1].apply(lx, m, sg[x].lazy);
             sg[2 * x + 2].apply(m + 1, rx, sg[x].lazy);
         }
@@ -47,7 +46,6 @@ class Segment_Tree {
         if (lx > r || rx < l)return;
         if (l <= lx && rx <= r) {
             sg[x].apply(lx, rx, val);
-            sg[x].lazy += val;
             return;
         }
         int m = (lx + rx) >> 1;

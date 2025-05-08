@@ -1,28 +1,30 @@
-struct Gauss_XOR {
+struct xorBasis {
+    const int LOG = 32;
     vector<ll> basis;
     int s;
 
-    Gauss_XOR() {
+    xorBasis() {
         s = 0;
-        basis.resize(max_bit + 1);
+        basis.resize(LOG);
     }
 
     bool insert(ll mask) {
-        for (int i = max_bit; ~i; i--) {
+        for (int i = LOG - 1; ~i; i--) {
             if ((mask >> i) & 1) {
                 if (!basis[i]) {
                     basis[i] = mask;
                     s++;
                     return true;
                 }
+                mask ^= basis[i];
             }
-            mask ^= basis[i];
+
         }
         return false;
     }
 
     bool exist(ll mask) {
-        for (int i = max_bit; ~i; i--) {
+        for (int i = LOG - 1; ~i; i--) {
             if ((mask >> i) & 1) {
                 if (!basis[i]) {
                     basis[i] = mask;
@@ -40,7 +42,7 @@ struct Gauss_XOR {
         ll tot = (1ll << s);
         if (k > tot) return -1;
         ll ans = 0;
-        for (int i = max_bit - 1; i >= 0; i--) {
+        for (int i = LOG - 1; i >= 0; i--) {
             if (!basis[i]) continue;
             tot >>= 1;
             ll on = (ans >> i) & 1;

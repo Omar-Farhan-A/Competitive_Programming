@@ -14,7 +14,7 @@ struct Node {
     }
 };
 
-struct PS {
+struct PST {
     int n;
     vector<Node *> roots;
 
@@ -42,10 +42,8 @@ struct PS {
         return query(node->left, lx, m, l, r) + query(node->right, m + 1, rx, l, r);
     }
 
-    PS(vector<int> &a) {
-        n = 1;
-        while (n < sz(a))n <<= 1;
-        n <<= 1;
+    PST(vector<int> &a) {
+        n = sz(a);
         roots.push_back(build(0, n - 1, a));
     }
 
@@ -60,5 +58,4 @@ struct PS {
     void makeCopy(int k) {
         roots.push_back(roots[k]);
     }
-
 };

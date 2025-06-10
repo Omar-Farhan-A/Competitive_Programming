@@ -1,5 +1,4 @@
 struct FenwickTree{
-1-based
 private:
         vector<ll>tree;
         int N;

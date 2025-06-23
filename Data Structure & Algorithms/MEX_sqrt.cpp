@@ -13,7 +13,7 @@ public:
  
     void add(int x) {
         if (!freq[x]) {
-            block[x / SQ]--;
+            block[x / SQ]++;
         }
         freq[x]++;
     }
@@ -21,7 +21,7 @@ public:
     void remove(int x) {
         freq[x]--;
         if (!freq[x]) {
-            block[x / SQ]++;
+            block[x / SQ]--;
         }
     }
  

@@ -1,18 +1,18 @@
-vector< vector<int> > adj;
-vector<int> lowLink, inDeg;
-int timer;
-void tarjan(int u,int p) {
- lowLink[u]=inDeg[u]=++timer;
- for(auto &i:adj[u]){
-     if(!inDeg[i]){
-         tarjan(i,u);
-         lowLink[u]=min(lowLink[u],lowLink[i]);
-         if(lowLink[i]==inDeg[i]){
-             // it's a bridge between u,i
-         }
-     }
-     else if(i!=p){
-         lowLink[u]=min(lowLink[u],inDeg[i]);
-     }
- }
+vector<int> adj[N];
+int dfn[N], low[N], timer;
+
+void bridges(int node, int parent) {
+    dfn[node] = low[node] = ++timer;
+    for (auto &ch: adj[node]) {
+        if (ch == parent)continue;
+        if (dfn[ch] == -1) {
+            bridges(ch, node);
+            low[node] = min(low[node], low[ch]);
+            if (dfn[node] < low[ch]) {
+                // is_bridge
+            }
+        } else {
+            low[node] = min(low[node], dfn[ch]);
+        }
+    }
 }

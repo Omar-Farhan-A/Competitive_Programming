@@ -1,18 +1,22 @@
-vector< vector<int> > adj;
-vector<int> lowLink, inDeg;
-int timer;
-void tarjan(int u,int p) {
-    lowLink[u]=inDeg[u]=++timer;
-    for(auto &i:adj[u]){
-        if(!inDeg[i]){
-            tarjan(i,u);
-            lowLink[u]=min(lowLink[u],lowLink[i]);
-            if(lowLink[i]>=inDeg[i]){
-                // u is an articulation point
-            }
-        }
-        else if(i!=p){
-            lowLink[u]=min(lowLink[u],inDeg[i]);
+const int N = 2e5 + 5;
+vector<int> adj[N];
+int dfn[N], low[N];
+set<int> points;
+int cnt;
+
+void articulationPoint(int node, int parent) {
+    dfn[node] = low[node] = ++cnt;
+    int childs = 0;
+    for (auto &ch: adj[node]) {
+        if (ch == parent)continue;
+        if (dfn[ch] == -1) {
+            articulationPoint(ch, node);
+            low[node] = min(low[node], low[ch]);
+            if (dfn[node] <= low[ch] && ~parent)points.insert(node);
+            childs++;
+        } else {
+            low[node] = min(low[node], dfn[ch]);
         }
     }
+    if (childs > 1 && parent == -1)points.insert(node);
 }

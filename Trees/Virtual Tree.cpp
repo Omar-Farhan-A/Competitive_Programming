@@ -58,6 +58,7 @@ struct virtual_tree {
             st.push(v[i]);
         }
         return v;
+      // v[0] is the root
     }
  
     void clear() {

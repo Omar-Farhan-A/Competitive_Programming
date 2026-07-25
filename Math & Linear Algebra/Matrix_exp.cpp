@@ -1,37 +1,37 @@
+const int N=32;
 struct Matrix {
-    vector<vector<ll>> a;
+    array<array<ll, N>, N> a{};
  
-    Matrix(vector<vector<ll>> init = {}) {
-        a = init;
+    static Matrix identity() {
+        Matrix result;
+        for (int i = 0; i < N; i++)result.a[i][i] = 1;
+        return result;
     }
  
-    Matrix operator*(Matrix other) {
-        int n = a.size(), m = other.a[0].size(), g = other.a.size();
-        vector<vector<ll>> product(n, vector<ll>(m));
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                for (int k = 0; k < g; k++) {
-                    (product[i][j] += a[i][k] * other.a[k][j]) %= MOD;
+    Matrix operator *(const Matrix &other) const {
+        Matrix result;
+        for (int i = 0; i < N; i++) {
+            for (int k = 0; k < N; k++) {
+                if (a[i][k] == 0) continue;
+                for (int j = 0; j < N; j++) {
+                    if (other.a[k][j] == 0) continue;
+                    result.a[i][j] += a[i][k] * other.a[k][j] % mod;
+                    if (result.a[i][j] >= mod) {
+                        result.a[i][j] -= mod;
+                    }
                 }
             }
         }
-        return product;
+        return result;
     }
 };
  
-Matrix fast_exp(Matrix m, ll p) {
-    int n = m.a.size();
-    vector<vector<ll>> init(n, vector<ll>(n));
-    Matrix product(init);
-    for (int i = 0; i < n; i++) {
-        product.a[i][i] = 1;
+Matrix power(Matrix base, ll k) {
+    Matrix result = Matrix::identity();
+    while (k) {
+        if (k & 1)result = result * base;
+        base = base * base;
+        k >>= 1;
     }
-    while (p) {
-        if (p & 1) {
-            product = product * m;
-        }
-        m = m * m;
-        p >>= 1;
-    }
-    return product;
+    return result;
 }

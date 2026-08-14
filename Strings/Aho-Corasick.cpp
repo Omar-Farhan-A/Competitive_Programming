@@ -86,7 +86,7 @@ public:
         }
     }
 
-    // count the number of strings form trie in s
+    // count the number of strings from trie in s
     int count(string &s) {
         int ret = 0, v = 0;
         for (auto &i: s) {

@@ -1,47 +1,37 @@
-template<typename T = int>
-struct Fenwick_Tree_Range {
-    int N;
-    T DEFAULT;
+template<typename T=int>
+struct Range_BIT {
     vector<T> M, C;
-    Fenwick_Tree_Range(int sz = 0) {
-        N = sz + 1, DEFAULT = 0;
-        M = C = vector<T>(N + 10);
-    }
-    int lowest_bit(int idx) {
-        return (idx & -idx);
+    int n;
+
+    Range_BIT(int _n) : n(_n + 5) {
+        M.assign(n, 0);
+        C.assign(n, 0);
     }
 
-    void build(vector<T> &nums) {
-        for (int i = 0; i < sz(nums); i++)
-            add(i, i, nums[i]);
-    }
-    void add_range(int idx, T addM, T addC) {
-        idx++;
-        while (idx <= N) {
-            M[idx] += addM;
-            C[idx] += addC;
-            idx += lowest_bit(idx);
-        }
-    }
-    void add(int l, int r, T val) {
-        add_range(l, val, -val * (l - 1));
-        add_range(r + 1, -val, val * r);
+    void add(vector<T> &bit, int i, T x) {
+        for (++i; i < n; i += (i & -i))
+            bit[i] += x;
     }
 
-    void add(int idx, T val) {
-        add(idx, idx, val);
+    void add(int l, int r, T x) {
+        add(M, l, x);
+        add(M, r + 1, -x);
+        add(C, l, x * (l - 1));
+        add(C, r + 1, -x * r);
     }
-    T get(int idx) {
-        T ans = DEFAULT;
-        int pos = idx++;
-        while (idx) {
-            ans += pos * M[idx] + C[idx];
-            idx -= lowest_bit(idx);
-        }
-        return ans;
+
+    T query(vector<T> &bit, int i) {
+        T ret = 0;
+        for (++i; i; i -= (i & -i))
+            ret += bit[i];
+        return ret;
     }
-    T query(int L, int R) {
-        if (L > R) return DEFAULT;
-        return get(R) - get(L - 1);
+
+    T query(int i) {
+        return query(M, i) * i - query(C, i);
+    }
+
+    T query(int l, int r) {
+        return query(r) - query(l - 1);
     }
 };

@@ -51,6 +51,21 @@ struct Treap {
         return b;
     }
 
+// merge (keys(a)<keys(b)) is not necessary , O(m*log(n/m + 1) where n>=m
+    pnode join(pnode a, pnode b) {
+        if (!a) return b;
+        if (!b) return a;
+
+        if (a->priority < b->priority)
+            swap(a, b);
+
+        pnode l, r;
+        split(b, a->key, l, r);
+
+        a->left = join(a->left, l);
+        a->right = join(a->right, r);
+        return a;
+    }
     bool find(pnode t, int key) {
         if (!t)return false;
         if (t->key == key)return true;

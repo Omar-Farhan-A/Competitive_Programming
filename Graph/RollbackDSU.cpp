@@ -1,42 +1,49 @@
-struct DSU {
-    vector<int> par, gp;
-    stack<array<int, 5>> prev;
-    int ans = 0;
+struct RollbackDSU {
+    vector<int> par, sz;
+    stack<array<int, 4> > history;
+    int components;
 
-    DSU(int n) {
-        par.resize(n + 5);
-        gp = vector<int>(n + 5, 1);
-        std::iota(par.begin(), par.end(), 0);
-        this->ans = n;
+    RollbackDSU(int n) {
+        par.resize(n + 1);
+        sz.assign(n + 1, 1);
+        iota(par.begin(), par.end(), 0);
+        components = n;
     }
 
-    int getRoot(int u) {
-        if (par[u] == u)return u;
-        return getRoot(par[u]);
+    int find(int u) {
+        if (par[u] == u)
+            return u;
+        return find(par[u]);
     }
 
-    void merge(int u, int v) {
-        v = getRoot(v), u = getRoot(u);
-        if (u == v) {
-            return;
-        }
-        if (gp[u] > gp[v])swap(u, v);
-
-        prev.push({u, par[u], v, gp[v], ans});
-        ans--;
-        gp[v] += gp[u];
+    bool merge(int u, int v) {
+        u = find(u);
+        v = find(v);
+        if (u == v)
+            return false;
+        if (sz[u] > sz[v])
+            swap(u, v);
+        history.push({u, v, sz[v], components});
         par[u] = v;
+        sz[v] += sz[u];
+        components--;
+        return true;
+    }
+
+    int snapshot() {
+        return history.size();
     }
 
     void rollback() {
-        auto s = prev.top();
-        prev.pop();
-        if (s[0] == -1) {
-            return;
-        }
-        ans = s[4];
-        par[s[0]] = s[1];
-        gp[s[2]] = s[3];
+        auto [u, v, oldSizeV, oldComponents] = history.top();
+        history.pop();
+        par[u] = u;
+        sz[v] = oldSizeV;
+        components = oldComponents;
     }
 
+    void rollback(int snap) {
+        while ((int) history.size() > snap)
+            rollback();
+    }
 };

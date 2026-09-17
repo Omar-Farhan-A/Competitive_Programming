@@ -9,8 +9,8 @@ class BinaryTrie {
     };
 
     vector<Node> trie;
-public:
 
+public:
     BinaryTrie() {
         trie = vector<Node>(1);
     }
@@ -19,7 +19,7 @@ public:
         int v = 0;
         for (int i = 63; ~i; i--) {
             bool on = (x >> i) & 1;
-            if (!trie[v].fre[on]) {
+            if (trie[v].next[on] == -1) {
                 trie[v].next[on] = int(trie.size());
                 trie.emplace_back();
             }

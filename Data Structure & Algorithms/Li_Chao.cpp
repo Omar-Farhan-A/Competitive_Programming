@@ -49,7 +49,7 @@ void insert(node *&cur, line l, int lx, int rx) {
 }
 
 ll query(node *cur, int lx, int rx, ll x) {
-    if (x < lx || x > rx)return LONG_LONG_MAX;
+    if (x < lx || x > rx)return LONG_LONG_MIN;
     ll ret = sub(cur->l, x);
     if (lx == rx)return ret;
     int m = lx + (rx - lx) / 2;

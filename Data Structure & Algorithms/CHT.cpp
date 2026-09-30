@@ -55,3 +55,4 @@ struct CHT {
     //     }
     //     return subst(0, x);
     // }
+};
